@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:src="@drawable/app_ic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kadwa_bold"
+            android:gravity="center"
+            android:text="@string/title1"
+            android:textColor="@color/main_color"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="520dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/hour"
+                    android:layout_width="80dp"
+                    android:layout_height="100dp"
+                    android:inputType="datetime"
+                    android:text="23"
+                    android:textSize="40sp"
+                    android:fontFamily="@font/kadwa_regular"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_blue"
+                    android:gravity="center"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="100dp"
+                    android:text=":"
+                    android:textSize="40sp"
+                    android:fontFamily="@font/kadwa_regular"
+                    android:textColor="@color/main_color"
+                    android:gravity="center"/>
+
+                <EditText
+                    android:id="@+id/minute"
+                    android:layout_width="80dp"
+                    android:layout_height="100dp"
+                    android:inputType="datetime"
+                    android:text="00"
+                    android:textSize="40sp"
+                    android:fontFamily="@font/kadwa_regular"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_blue"
+                    android:gravity="center"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <ImageButton
+            android:id="@+id/addBtn"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:src="@drawable/add_ic"
+            android:contentDescription="Add appointment" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</RelativeLayout>
