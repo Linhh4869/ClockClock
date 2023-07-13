@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import java.text.DecimalFormat
 import java.util.Calendar
@@ -25,6 +26,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var minuteEditText: EditText
     private var alarmPendingIntent: PendingIntent? = null
     private var alarmStartTime: Long = 0
+//    private lateinit var calendar: Calendar
+
+    //Thời gian lặp lại các báo thức
+    private val interval = 5 * 60 * 1000 // milliseconds
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +82,8 @@ class MainActivity : AppCompatActivity() {
             setAlarm(context, selectedHour, selectedMinute, isRepeat)
 
             dialog.dismiss()
+
+            Toast.makeText(this, "Báo thức hiển thị sau ", Toast.LENGTH_SHORT).show()
         }
 
         dialog.show()
@@ -88,26 +95,13 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(context, MyBroadcastReceived::class.java)
         intent.action = "ACTION_ALARM_TRIGGERED"
 
-        val sharedPreferences = context.getSharedPreferences("AlarmPreferences", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-
-        // Lưu thông tin báo thức
-        editor.putInt("AlarmHour", hour)
-        editor.putInt("AlarmMinute", minute)
-        editor.putBoolean("AlarmRepeat", repeat)
-        editor.apply()
-
-        val requestCode = if (repeat) {
-            hour * 100 + minute
-        } else {
-            0
-        }
+        val requestCode = 0
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             requestCode,
             intent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val calendar = Calendar.getInstance()
@@ -116,31 +110,32 @@ class MainActivity : AppCompatActivity() {
         calendar.set(Calendar.MINUTE, minute)
         calendar.set(Calendar.SECOND, 0)
 
-        val timeDiff = calendar.timeInMillis - System.currentTimeMillis()
+        if (calendar.timeInMillis <= System.currentTimeMillis()) {
+            // Nếu thời gian đã qua, thì tăng thời gian lên 1 ngày
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
         if (repeat) {
-            val interval = 5 * 60 * 1000 // milliseconds
-
-            if (calendar.timeInMillis <= System.currentTimeMillis()) {
-                // Nếu thời gian đã qua, thì tăng thời gian lên 1 ngày
-                calendar.add(Calendar.DAY_OF_YEAR, 1)
-            }
-
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
                 interval.toLong(), pendingIntent
             )
         } else {
-            if (timeDiff > 0) {
-                alarmManager.setExact(
-                    AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
-                )
-            }
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
+            )
         }
 
         // Lưu trữ PendingIntent và thời gian bắt đầu báo thức
         alarmPendingIntent = pendingIntent
         alarmStartTime = calendar.timeInMillis
 
+        val sharedPreferences = context.getSharedPreferences("AlarmPreferences", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("AlarmHour", hour)
+        editor.putInt("AlarmMinute", minute)
+        editor.putBoolean("AlarmRepeat", repeat)
+        editor.apply()
     }
 
     override fun onResume() {
@@ -148,8 +143,9 @@ class MainActivity : AppCompatActivity() {
 
         // Kiểm tra nếu đã đặt báo thức và đến thời gian đặt báo thức
         val currentTime = System.currentTimeMillis()
-        if (alarmStartTime in 1..currentTime && currentTime - alarmStartTime <= 5 * 60 * 1000) {
-            val intent = Intent(this, MyNotification::class.java)
+        if (alarmStartTime in (currentTime - interval).. currentTime) {
+            val intent = Intent(this, MyBroadcastReceived::class.java)
+            intent.action = "ACTION_STOP_TRIGGER"
             startService(intent)
         }
     }
