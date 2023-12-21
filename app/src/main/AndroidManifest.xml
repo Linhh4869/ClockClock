@@ -42,8 +42,6 @@
                 <action android:name="ACTION_ALARM_TRIGGERED"/>
             </intent-filter>
         </receiver>
-
-        <service android:name=".MyNotification"/>
     </application>
 
 </manifest>

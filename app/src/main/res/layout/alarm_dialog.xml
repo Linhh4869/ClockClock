@@ -24,7 +24,8 @@
         <TimePicker
             android:id="@+id/picker"
             android:layout_width="300dp"
-            android:layout_height="400dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:headerBackground="@color/main_color"
@@ -60,7 +61,7 @@
                 android:fontFamily="@font/kadwa_regular"
                 android:text="Hủy"
                 android:textColor="@color/main_color"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/create"
@@ -70,7 +71,7 @@
                 android:background="@color/main_color"
                 android:fontFamily="@font/kadwa_regular"
                 android:text="Lưu"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
